@@ -1,0 +1,28 @@
+.tmp.drivedownload/
+.tmp.driveupload/
+.config.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+ENV/
+*.egg-info/
+.eggs/
+
+# VSCode
+.vscode/
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
