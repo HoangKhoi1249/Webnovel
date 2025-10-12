@@ -1,6 +1,7 @@
 .tmp.drivedownload/
 .tmp.driveupload/
-.config.json
+novels/
+config.json
 
 # Python
 __pycache__/
