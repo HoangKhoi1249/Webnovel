@@ -1,5 +1,7 @@
+import os
 import json
 import google.generativeai as genai
+from utilities import has_subfolders
 
 # Load components from JSON
 
@@ -36,7 +38,7 @@ def translate(content):
     print(prompt, instruc_relate)
     response = model.generate_content(
        contents=f"""
-        Translate the following content to Vietnamese:\n
+        Dịch văn bản sau sang Tiếng việt:\n
         
         {content}
 """,
@@ -48,3 +50,4 @@ def translate(content):
     )
 
     return response.text
+

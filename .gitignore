@@ -2,6 +2,8 @@
 .tmp.driveupload/
 novels/
 config.json
+prompt.md
+
 
 # Python
 __pycache__/
@@ -15,6 +17,7 @@ venv/
 ENV/
 *.egg-info/
 .eggs/
+tests/
 
 # VSCode
 .vscode/
