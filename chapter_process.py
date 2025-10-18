@@ -1,4 +1,4 @@
-from utilities import has_subfolders
+import utilities as util
 import os
 import json
 
@@ -8,7 +8,7 @@ def collect_files(extension=".txt"):
         data_config = json.load(file)
         novel_name = data_config['novel_name']
     novel_folder = f"./novels/{novel_name}/"
-    if has_subfolders(novel_folder):
+    if util.has_subfolders(novel_folder):
         volumes_names = [d for d in os.listdir(novel_folder) if os.path.isdir(os.path.join(novel_folder, d))]
         volumes_lists = []
         # Lấy folder volume
@@ -37,7 +37,7 @@ def collect_files(extension=".txt"):
         return None, chapters_path
 
 def save_content(origin_path, content):
-    save_path = origin_path.replace(".txt", "_translated.txt")
+    save_path = util.analyze_path(origin_path)
     for line in content:
         with open(save_path, 'w', encoding='utf-8') as file:
             if isinstance(content, list):

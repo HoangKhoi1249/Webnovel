@@ -1,6 +1,6 @@
 import json
 import google.generativeai as genai
-from utilities import has_subfolders
+import utilities as util
 
 # Load components from JSON
 
