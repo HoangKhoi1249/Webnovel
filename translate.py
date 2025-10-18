@@ -1,4 +1,3 @@
-import os
 import json
 import google.generativeai as genai
 from utilities import has_subfolders

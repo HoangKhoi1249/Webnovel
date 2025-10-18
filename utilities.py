@@ -11,8 +11,21 @@ def is_2d_list(lst):
     return any(isinstance(item, list) for item in lst)
 
 def analyze_path(path):
-    path = path.split('/')
-    return path
+    import os
+    translated_path = "translated"
+    os.makedirs(translated_path, exist_ok=True)
+    parts = path.split('/')
+    len_path = len(parts)
+    if 4 >=len_path <= 5:
+        del parts[0: 2]
+        chapter_path = "/".join(parts)
+    else:
+        print("Invalid path! Error: 121")
+    
+    #new_path = os.path.join(".", translated_path, chapter_path)
+    new_path = f"./{translated_path}/{chapter_path}"
+    return new_path
+    
 
 
 if __name__ == "__main__":
