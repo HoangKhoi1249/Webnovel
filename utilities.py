@@ -1,4 +1,4 @@
-def util.has_subfolders(fol_path):
+def has_subfolders(fol_path):
     from os import scandir
     for entry in scandir(fol_path):
         if entry.is_dir():
