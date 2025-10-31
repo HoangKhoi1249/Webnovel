@@ -5,6 +5,28 @@ import utilities as util
 # Load components from JSON
 
 def translate(content):
+
+    """Translate text content using Google's Generative AI model.
+
+    Args:
+        content (str): The text content to be translated to Vietnamese.
+
+    Returns:
+        str: The translated Vietnamese text.
+
+    Example:
+        >>> text = "Hello world"
+        >>> result = translate(text)
+        >>> print(result)
+        "Xin chào thế giới"
+
+    Notes:
+        - Requires config.json with api_key, model and novel_name
+        - Uses relationship.md file from novel folder for context
+        - Uses prompt.txt for translation instructions
+        - Temperature and top_p parameters control translation creativity
+    """
+    
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
         key = data_config['api_key']
