@@ -67,7 +67,6 @@ def collect_files(extension=".txt"):
         chapters_path = []
         for chapter in os.listdir(novel_folder):
             if chapter.endswith(extension):
-                print(f"Tìm thấy {chapter}")
                 
                 chapters_path.append(os.path.join(novel_folder, chapter))
         return None, chapters_path
