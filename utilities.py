@@ -63,7 +63,7 @@ def analyze_save_path(path):
     parts = path.split('/')
     len_path = len(parts)
 
-    if 4 >=len_path <= 5:
+    if 4 <=len_path <= 5:
         del parts[0: 2]
         chapter_path = "/".join(parts)
     else:
@@ -76,4 +76,4 @@ def analyze_save_path(path):
 
 
 if __name__ == "__main__":
-    print(analyze_save_path('./novels/Advent of the Three Calamities/00004.txt'))
+    print(analyze_save_path('./novels/Advent of the Three Calamities/da/00004.txt'))

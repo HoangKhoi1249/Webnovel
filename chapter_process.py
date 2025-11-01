@@ -51,7 +51,7 @@ def collect_files(extension=".txt"):
         # Lấy folder volume
         for volume in volumes_names:
             
-            print(volume)
+            
             chapters_in_vol = []
             # Lấy từng file trong folder volume
             for chapter in os.listdir(os.path.join(novel_folder, volume)):
@@ -59,7 +59,6 @@ def collect_files(extension=".txt"):
                 if chapter.endswith(extension):
                     chapters_in_vol.append(os.path.join(novel_folder, volume, chapter))
             volumes_lists.append(chapters_in_vol)
-            print(chapters_in_vol)
                 
         return volumes_names, volumes_lists
     else:
@@ -112,6 +111,4 @@ if __name__ == "__main__":
     vol_lists, chapters_list = collect_files()
     print("Volumes found:", vol_lists)
     print(isinstance(chapters_list, list))
-    with open("./novels/Advent of the Three Calamities/00004.txt", "r", encoding="utf-8") as f:
-        contet = f.read()
-
+    save_content('./novels/test_novel/das/chapter_test.txt', 'This is a test content.')
