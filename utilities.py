@@ -72,6 +72,13 @@ def analyze_save_path(path):
     #new_path = os.path.join(".", translated_path, chapter_path)
     new_path = f"./{translated_path}/{chapter_path}"
     return new_path
+
+
+
+def normalize_path(path):
+    import re
+    # Thay thế tất cả các chuỗi gồm \ hoặc / lặp lại bằng một dấu /
+    return re.sub(r"[\\/]+", "/", path)
     
 
 

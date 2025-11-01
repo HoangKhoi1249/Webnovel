@@ -8,5 +8,10 @@ def main():
     vol_lists, chapters_list = cp.collect_files()
     if vol_lists:
         print("Volumes found:", vol_lists)
-    print(chapters_list[0])
+    for chapter in chapters_list:
+        if util.is_2d_list(chapters_list):
+            for chap_path in chapter:
+                print(chap_path)
+        else:
+            print(chapter)
 main()

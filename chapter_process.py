@@ -57,7 +57,12 @@ def collect_files(extension=".txt"):
             for chapter in os.listdir(os.path.join(novel_folder, volume)):
                 
                 if chapter.endswith(extension):
-                    chapters_in_vol.append(os.path.join(novel_folder, volume, chapter))
+                    chapters_in_vol.append(
+                        util.normalize_path(
+                            os.path.join(novel_folder, volume, chapter
+                                         )
+                                         )
+                                         )
             volumes_lists.append(chapters_in_vol)
                 
         return volumes_names, volumes_lists
@@ -68,7 +73,12 @@ def collect_files(extension=".txt"):
         for chapter in os.listdir(novel_folder):
             if chapter.endswith(extension):
                 
-                chapters_path.append(os.path.join(novel_folder, chapter))
+                chapters_path.append (
+                    util.normalize_path (
+                        os.path.join(novel_folder, chapter
+                                     )
+                                     )
+                                     )
         return None, chapters_path
 
 def save_content(origin_path, content):
