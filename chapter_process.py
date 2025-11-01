@@ -1,6 +1,8 @@
 import utilities as util
 import os
 import json
+import translate as tl
+import time
 
 def collect_files(extension=".txt"):
     """Collect file paths in the novel directory.
@@ -103,6 +105,7 @@ def save_content(origin_path, content):
         >>> save_content('./novels/story/ch1.txt', ['Line 1', 'Line 2'])
         # Creates: ./translated/story/ch1.txt with multiple lines
     """
+    
     save_path = util.analyze_save_path(origin_path)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
@@ -112,8 +115,24 @@ def save_content(origin_path, content):
                 file.write(line + '\n') 
         else:
             file.write(content)
+    print(f"Saved to: {save_path}")
+    return True
 
-
+def full_translate(path):
+    """Full process to collect files and save test content."""
+    with open(path, 'r', encoding="UTF-8") as file:
+        content = file.read()
+    is_success = False
+    while not is_success:
+        try:
+            translated_content = tl.translate_content(content)
+            save_content(path, translated_content)
+            print("Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
+            is_success = True
+            time.sleep(10)
+        except Exception as e:
+            print(f"Lỗi dịch: {e}. Thử lại sau 10 giây...")
+            time.sleep(10)
 # Test
 if __name__ == "__main__":
     print("Starting file collection...")

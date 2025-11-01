@@ -63,11 +63,12 @@ def analyze_save_path(path):
     parts = path.split('/')
     len_path = len(parts)
 
-    if 4 <=len_path <= 5:
+    if 3 <=len_path <= 5:
         del parts[0: 2]
         chapter_path = "/".join(parts)
     else:
-        print("Invalid path! Error: 121")
+        print("Invalid path! Error 121")
+        return None
     
     #new_path = os.path.join(".", translated_path, chapter_path)
     new_path = f"./{translated_path}/{chapter_path}"
@@ -79,6 +80,9 @@ def normalize_path(path):
     import re
     # Thay thế tất cả các chuỗi gồm \ hoặc / lặp lại bằng một dấu /
     return re.sub(r"[\\/]+", "/", path)
+
+def has_existed(path):
+    pass
     
 
 
