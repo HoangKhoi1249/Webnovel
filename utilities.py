@@ -1,3 +1,6 @@
+
+import os
+import re
 def has_subfolders(fol_path):
     """Check if a directory contains any subdirectories.
 
@@ -13,8 +16,8 @@ def has_subfolders(fol_path):
         >>> has_subfolders("./novels/my_novel/volume1")
         False  # If volume1 only contains files
     """
-    from os import scandir
-    for entry in scandir(fol_path):
+
+    for entry in os.scandir(fol_path):
         if entry.is_dir():
             return True
     return False
@@ -34,6 +37,7 @@ def is_2d_list(lst):
         >>> is_2d_list([1, 2, 3])
         False
     """
+    
     if not isinstance(lst, list):
         return False
     return any(isinstance(item, list) for item in lst)
@@ -56,7 +60,7 @@ def analyze_save_path(path):
         - Expects path depth of 4-5 levels
         - Removes first two path components ('./' and 'novels/')
     """
-    import os
+
 
     translated_path = "translated"
     os.makedirs(translated_path, exist_ok=True)
@@ -77,11 +81,12 @@ def analyze_save_path(path):
 
 
 def normalize_path(path):
-    import re
+
     # Thay thế tất cả các chuỗi gồm \ hoặc / lặp lại bằng một dấu /
     return re.sub(r"[\\/]+", "/", path)
 
-def has_existed(path):
+def is_existed(path):
+    
     pass
     
 
