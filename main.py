@@ -10,8 +10,8 @@ def main(split_volume=True):
         print("Volumes found:", vol_lists)
     for chapter in chapters_list:
         if util.is_2d_list(chapters_list) and split_volume:
-            for chap_path in chapter:
-                print(chap_path)
+            for chapter_path in chapter:
+                print(chapter_path)
         else:
             print(chapter)
 main()
