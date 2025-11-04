@@ -2,6 +2,7 @@
 import os
 import re
 def has_subfolders(fol_path):
+
     """Check if a directory contains any subdirectories.
 
     Args:
@@ -20,9 +21,11 @@ def has_subfolders(fol_path):
     for entry in os.scandir(fol_path):
         if entry.is_dir():
             return True
+        
     return False
 
 def is_2d_list(lst):
+
     """Check if a list contains nested lists (2D list).
 
     Args:
@@ -40,9 +43,11 @@ def is_2d_list(lst):
     
     if not isinstance(lst, list):
         return False
+    
     return any(isinstance(item, list) for item in lst)
 
 def analyze_save_path(path):
+
     """Process file path and create translated file structure.
 
     Args:
@@ -82,6 +87,7 @@ def analyze_save_path(path):
 
 
 def normalize_path(path):
+
     """Normalize file path separators.
 
     Args:
@@ -97,7 +103,7 @@ def normalize_path(path):
         'path/to/file'
     """
 
-    # Thay thế tất cả các chuỗi gồm \ hoặc / lặp lại bằng một dấu /
+    # Replace backslashes and multiple slashes with a single forward slash
     return re.sub(r"[\\/]+", "/", path)
 
 def is_existed(path):

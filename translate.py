@@ -1,8 +1,8 @@
 import json
 import google.generativeai as genai
-import utilities as util
 
-# Load components from JSON
+
+
 
 def translate(content):
 
@@ -26,28 +26,31 @@ def translate(content):
         - Uses prompt.txt for translation instructions
         - Temperature and top_p parameters control translation creativity
     """
-    
+    # Load configuration from config.json
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
         key = data_config['api_key']
         model = data_config['model']
         novel_name = data_config['novel_name']
 
+    # Construct paths for additional files
     novel_folder = f"./novels/{novel_name}/"
     relationship = novel_folder + "relationship.md"
+
+    # Load character relationships for context
 
     with open(relationship, 'r', encoding='utf-8') as file:
         data_relationship = file.read()
     
+    # Load translation prompt instructions
     with open("prompt.txt", 'r', encoding='utf-8') as file:
         prompt = file.read()
 
+    # Set up model with API key and instructions
     instruc_relate = data_relationship
-
-    # Initialize the GenAI client
-
     genai.configure(api_key=key)
 
+    # Initialize the generative model with system instructions
     model = genai.GenerativeModel(
         model_name=model,
         system_instruction=f"""
@@ -56,7 +59,8 @@ def translate(content):
         {instruc_relate}
     """
         )
-    print(prompt, instruc_relate)
+    
+    # Generate the translated content
     response = model.generate_content(
        contents=f"""
         Dịch văn bản sau sang Tiếng việt:\n

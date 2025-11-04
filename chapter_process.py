@@ -42,6 +42,7 @@ def collect_files(extension=".txt"):
         >>> print(chapters)
         ['novels/my_novel/chap1.txt', 'novels/my_novel/chap2.txt']
     """
+    
     print()
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
@@ -52,10 +53,12 @@ def collect_files(extension=".txt"):
     if util.has_subfolders(novel_folder):
         volumes_names = [d for d in os.listdir(novel_folder) if os.path.isdir(os.path.join(novel_folder, d))]
         volumes_lists = []
-        # Lấy folder volume
+
+        # Get folder volume
         for volume in volumes_names:
             chapters_in_vol = []
-            # Lấy từng file trong folder volume
+
+            # Get individual chapter in volume
             for chapter in os.listdir(os.path.join(novel_folder, volume)):
                 chapter_path = util.normalize_path(os.path.join(novel_folder, volume, chapter))
                 if chapter.endswith(extension) and not util.is_existed(chapter_path):
@@ -70,8 +73,10 @@ def collect_files(extension=".txt"):
         
         chapters_path = []
         chapters_list = os.listdir(novel_folder)
+
         for chapter in chapters_list:
             chapter = os.path.join(novel_folder, chapter)
+
             if chapter.endswith(extension) and not util.is_existed(chapter):
                 
                 chapters_path.append (
@@ -79,6 +84,7 @@ def collect_files(extension=".txt"):
                         chapter
                                      )
                                      )
+        
         return None, chapters_path
 
 def save_content(origin_path, content):
@@ -142,7 +148,7 @@ def full_translate(path):
         - Saves translated content using save_content()
         - Adds delay between successful translations
     """
-    
+
     with open(path, 'r', encoding="UTF-8") as file:
         content = file.read()
     is_success = False
