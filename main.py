@@ -11,7 +11,7 @@ def main(split_volume=True):
         if util.is_2d_list(chapters_list) and split_volume:
             for vol in chapters_list:
                 for chap in vol:
-                    tl.translate_chapter(chap)
+                    cp.full_translate(chap)
         else:
             for chap in chapters_list:
                 cp.full_translate(chap)
