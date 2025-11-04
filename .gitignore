@@ -1,6 +1,7 @@
 .tmp.drivedownload/
 .tmp.driveupload/
 novels/
+translated/
 config.json
 prompt.md
 
