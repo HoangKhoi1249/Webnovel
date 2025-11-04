@@ -46,25 +46,22 @@ def collect_files(extension=".txt"):
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
         novel_name = data_config['novel_name']
+
     novel_folder = f"./novels/{novel_name}/"
+    
     if util.has_subfolders(novel_folder):
         volumes_names = [d for d in os.listdir(novel_folder) if os.path.isdir(os.path.join(novel_folder, d))]
         volumes_lists = []
         # Lấy folder volume
         for volume in volumes_names:
-            
-            
             chapters_in_vol = []
             # Lấy từng file trong folder volume
             for chapter in os.listdir(os.path.join(novel_folder, volume)):
-                
-                if chapter.endswith(extension):
+                chapter_path = util.normalize_path(os.path.join(novel_folder, volume, chapter))
+                if chapter.endswith(extension) and not util.is_existed(chapter_path):
                     chapters_in_vol.append(
-                        util.normalize_path(
-                            os.path.join(novel_folder, volume, chapter
-                                         )
-                                         )
-                                         )
+                        chapter_path
+                    )
             volumes_lists.append(chapters_in_vol)
                 
         return volumes_names, volumes_lists
@@ -72,13 +69,14 @@ def collect_files(extension=".txt"):
         print("Không có tập nào ở đây! Đang bắt đầu thu thập theo chap...")
         
         chapters_path = []
-        for chapter in os.listdir(novel_folder):
-            if chapter.endswith(extension):
+        chapters_list = os.listdir(novel_folder)
+        for chapter in chapters_list:
+            chapter = os.path.join(novel_folder, chapter)
+            if chapter.endswith(extension) and not util.is_existed(chapter):
                 
                 chapters_path.append (
                     util.normalize_path (
-                        os.path.join(novel_folder, chapter
-                                     )
+                        chapter
                                      )
                                      )
         return None, chapters_path
@@ -125,7 +123,7 @@ def full_translate(path):
     is_success = False
     while not is_success:
         try:
-            translated_content = tl.translate_content(content)
+            translated_content =  content#tl.translate_content(content)
             save_content(path, translated_content)
             print("Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
             is_success = True
@@ -140,3 +138,4 @@ if __name__ == "__main__":
     print("Volumes found:", vol_lists)
     print(isinstance(chapters_list, list))
     save_content('./novels/test_novel/das/chapter_test.txt', 'This is a test content.')
+    print(collect_files())

@@ -71,7 +71,8 @@ def analyze_save_path(path):
         del parts[0: 2]
         chapter_path = "/".join(parts)
     else:
-        print("Invalid path! Error 121")
+        print(f"Invalid path! Error 121 | Path depth: {len_path} | Path: {path}")
+        
         return None
     
     #new_path = os.path.join(".", translated_path, chapter_path)
@@ -86,8 +87,12 @@ def normalize_path(path):
     return re.sub(r"[\\/]+", "/", path)
 
 def is_existed(path):
+    translated_path = analyze_save_path(path)
+    if os.path.exists(translated_path):
+        return True
+    else:
+        return False
     
-    pass
     
 
 

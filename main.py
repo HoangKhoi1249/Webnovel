@@ -8,22 +8,13 @@ def main(split_volume=True):
         vol_lists, chapters_list = cp.collect_files()
         if vol_lists:
             print("Volumes found:", vol_lists)
-        for chapter in chapters_list:
-            if util.is_2d_list(chapter) and split_volume:
-                if len(chapter) == 0:
-                    print("Volume is empty, skipping...")
-                    continue
-                for chapter_path in chapter:
-                    print(f"""Tìm thấy:
-                        {chapter_path}""")
-                    cp.full_translate(chapter_path)
-                print("Đã hoàn tất một volume, bắt đầu volume tiếp theo...")
-                    
-                    
-            else:
-                print(f"""Tìm thấy:
-                    {chapter}""")
-                cp.full_translate(chapter)
+        if util.is_2d_list(chapters_list) and split_volume:
+            for vol in chapters_list:
+                for chap in vol:
+                    tl.translate_chapter(chap)
+        else:
+            for chap in chapters_list:
+                cp.full_translate(chap)
         print("Tất cả chương đã được dịch xong!")
     except Exception as e:
         print(f"Lỗi trong quá trình dịch: {e}")
