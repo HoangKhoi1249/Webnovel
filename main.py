@@ -1,7 +1,6 @@
 import utilities as util
 import chapter_process as cp
-import os
-import translate as tl
+
 
 def main(split_volume=True):
     try:
