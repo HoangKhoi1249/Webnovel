@@ -70,9 +70,7 @@ def translate(content):
         generation_config={
         "temperature": 0.7,
         "top_p": 0.8,
-    }
-
-    )
+    })
 
     return response.text
 
