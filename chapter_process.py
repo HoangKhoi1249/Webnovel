@@ -117,7 +117,32 @@ def save_content(origin_path, content):
     return True
 
 def full_translate(path):
-    """Full process to collect files and save test content."""
+    """Process a single chapter file through translation pipeline.
+
+    This function reads a chapter file, translates its content using the 
+    translation module, and saves the translated content. Includes error 
+    handling with automatic retry mechanism.
+
+    Args:
+        path (str): Path to the chapter file to translate.
+                   Example: './novels/story/chapter1.txt'
+
+    Returns:
+        None
+
+    Examples:
+        >>> full_translate('./novels/story/chapter1.txt')
+        "Đang dịch: ./novels/story/chapter1.txt..."
+        "Dịch hoàn tất! đang bắt đầu chương tiếp theo..."
+
+    Notes:
+        - Reads file in UTF-8 encoding
+        - Uses translate module for content translation
+        - Implements retry mechanism with 10-second delay
+        - Saves translated content using save_content()
+        - Adds delay between successful translations
+    """
+    
     with open(path, 'r', encoding="UTF-8") as file:
         content = file.read()
     is_success = False

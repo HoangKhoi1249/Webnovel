@@ -82,11 +82,40 @@ def analyze_save_path(path):
 
 
 def normalize_path(path):
+    """Normalize file path separators.
+
+    Args:
+        path (str): File path with mixed separators.
+
+    Returns:
+        str: Path with all separators normalized to forward slashes (/).
+
+    Examples:
+        >>> normalize_path('path\\to\\file')
+        'path/to/file'
+        >>> normalize_path('path/to\\file')
+        'path/to/file'
+    """
 
     # Thay thế tất cả các chuỗi gồm \ hoặc / lặp lại bằng một dấu /
     return re.sub(r"[\\/]+", "/", path)
 
 def is_existed(path):
+    """Check if translated version of a file exists.
+
+    Args:
+        path (str): Original file path.
+
+    Returns:
+        bool: True if translated file exists, False otherwise.
+
+    Examples:
+        >>> is_existed('./novels/story/chapter1.txt')
+        True  # If ./translated/story/chapter1.txt exists
+        >>> is_existed('./novels/story/new_chapter.txt')
+        False  # If translated file doesn't exist
+    """
+
     translated_path = analyze_save_path(path)
     if os.path.exists(translated_path):
         return True
