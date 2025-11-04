@@ -43,7 +43,7 @@ def translate(content):
         data_relationship = file.read()
     
     # Load translation prompt instructions
-    with open("prompt.txt", 'r', encoding='utf-8') as file:
+    with open("prompt.md", 'r', encoding='utf-8') as file:
         prompt = file.read()
 
     # Set up model with API key and instructions

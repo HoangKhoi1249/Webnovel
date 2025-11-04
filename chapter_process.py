@@ -42,7 +42,7 @@ def collect_files(extension=".txt"):
         >>> print(chapters)
         ['novels/my_novel/chap1.txt', 'novels/my_novel/chap2.txt']
     """
-    
+
     print()
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
@@ -155,7 +155,7 @@ def full_translate(path):
     while not is_success:
         try:
             print(f"Đang dịch: {path}...")
-            translated_content =  tl.translate_content(content)
+            translated_content =  tl.translate(content)
             save_content(path, translated_content)
             print("Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
             is_success = True
