@@ -1,5 +1,6 @@
 import json
 import google.generativeai as genai
+import os
 
 
 
@@ -26,6 +27,11 @@ def translate(content):
         - Uses prompt.txt for translation instructions
         - Temperature and top_p parameters control translation creativity
     """
+
+    os.environ["GRPC_VERBOSITY"] = "ERROR"
+    os.environ["GRPC_LOG_SEVERITY"] = "ERROR"
+
+
     # Load configuration from config.json
     with open('config.json', 'r', encoding="UTF-8") as file:
         data_config = json.load(file)
