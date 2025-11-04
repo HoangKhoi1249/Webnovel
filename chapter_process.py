@@ -123,7 +123,7 @@ def full_translate(path):
     is_success = False
     while not is_success:
         try:
-            translated_content =  content#tl.translate_content(content)
+            translated_content =  tl.translate_content(content)
             save_content(path, translated_content)
             print("Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
             is_success = True
