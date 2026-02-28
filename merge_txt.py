@@ -3,6 +3,21 @@ import os
 from pathlib import Path
 
 
+def decode_escape_sequences(text):
+    """
+    Decode escape sequences like \\n, \\t when passed from command line.
+    Command line passes literal '\\n' which needs to be converted to actual newline.
+    """
+    if not text:
+        return text
+    # Handle common escape sequences
+    text = text.replace('\\n', '\n')
+    text = text.replace('\\t', '\t')
+    text = text.replace('\\r', '\r')
+    text = text.replace('\\\\', '\\')
+    return text
+
+
 def merge_files(input_dir, output_file, sort_numerically=True, add_separator=False, separator="\n---\n", sep_name_pattern=None):
     """
     Merge all .txt files from a directory into a single output file.
@@ -45,23 +60,19 @@ def merge_files(input_dir, output_file, sort_numerically=True, add_separator=Fal
     
     with output_path.open("w", encoding="utf-8") as fout:
         for idx, file in enumerate(txt_files):
-            # Add newline before writing (except for the first file)
-            if idx > 0:
-                fout.write("\n")
+            # Add separator before writing (for all files)
+            fout.write("\n")
+            if sep_name_pattern:
+                # Use separator pattern with file name
+                sep_text = sep_name_pattern.format(name_file=file.stem)
+                fout.write(sep_text)
+            elif add_separator:
+                # Use standard separator
+                fout.write(separator)
             
             with file.open("r", encoding="utf-8") as fin:
                 content = fin.read()
                 fout.write(content)
-            
-            # Add separator between files (not after the last one)
-            if idx < len(txt_files) - 1:
-                if sep_name_pattern:
-                    # Use separator pattern with file name
-                    sep_text = sep_name_pattern.format(name_file=file.stem)
-                    fout.write(sep_text)
-                elif add_separator:
-                    # Use standard separator
-                    fout.write(separator)
     
     return len(txt_files)
 
@@ -124,6 +135,12 @@ def main():
     parser.add_argument("--batch", action="store_true", help="Batch mode: merge each subdirectory separately")
     
     args = parser.parse_args()
+    
+    # Decode escape sequences in text arguments
+    if args.sep_text:
+        args.sep_text = decode_escape_sequences(args.sep_text)
+    if args.sep_npath:
+        args.sep_npath = decode_escape_sequences(args.sep_npath)
     
     try:
         if args.batch:

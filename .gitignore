@@ -6,6 +6,7 @@ novels_txt_split/
 novels_txt/
 novels_backup/
 translated/
+results/
 config.json
 prompt.md
 key.txt
