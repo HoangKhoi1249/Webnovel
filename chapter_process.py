@@ -3,6 +3,8 @@ import os
 import json
 import translate as tl
 import time
+from colorama import Fore # type: ignore
+import sys
 
 def collect_files(extension=".txt"):
     """Collect file paths in the novel directory.
@@ -69,7 +71,7 @@ def collect_files(extension=".txt"):
                 
         return volumes_names, volumes_lists
     else:
-        print("Không có tập nào ở đây! Đang bắt đầu thu thập theo chap...")
+        print(Fore.YELLOW + "Không có tập nào ở đây! Đang bắt đầu thu thập theo chap...")
         
         chapters_path = []
         chapters_list = os.listdir(novel_folder)
@@ -111,7 +113,11 @@ def save_content(origin_path, content):
     """
     
     save_path = util.analyze_save_path(origin_path)
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    if save_path is None:
+        raise ValueError(f"analyze_save_path returned None for origin_path: {origin_path}")
+    dirpath = os.path.dirname(save_path)
+    if dirpath:
+        os.makedirs(dirpath, exist_ok=True)
 
     with open(save_path, "w", encoding='utf-8') as file:
         if isinstance(content, list):
@@ -119,10 +125,10 @@ def save_content(origin_path, content):
                 file.write(line + '\n') 
         else:
             file.write(content)
-    print(f"Saved to: {save_path}")
+    print(Fore.GREEN +f"Saved to: {save_path}")
     return True
 
-def full_translate(path):
+def full_translate(path, API_KEY=None, MODEL=None):
     """Process a single chapter file through translation pipeline.
 
     This function reads a chapter file, translates its content using the 
@@ -152,22 +158,60 @@ def full_translate(path):
     with open(path, 'r', encoding="UTF-8") as file:
         content = file.read()
     is_success = False
-    while not is_success:
-        try:
-            print(f"Đang dịch: {path}...")
-            translated_content =  tl.translate(content)
-            save_content(path, translated_content)
-            print("Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
-            is_success = True
-            time.sleep(10)
-        except Exception as e:
-            print(f"Lỗi dịch: {e}. Thử lại sau 10 giây...")
-            time.sleep(10)
+    with open('config.json', 'r', encoding="UTF-8") as file:
+            data_config = json.load(file)
+            NOVEL_NAME = data_config['novel_name']
+    with open('key.txt', 'r', encoding='utf-8') as f:
+        keys = [line.strip() for line in f]
+
+    with open('model.txt', 'r', encoding='utf-8') as m:
+        models = [line.strip() for line in m]
+    
+    is_success = False
+    key_index = 0
+
+    
+                
+    try:    
+        print(Fore.BLUE +f"Đang dịch bằng:\nkey : {API_KEY} \nmodel: {MODEL}:\npath: {path}\n")
+        translated_content =  tl.translate(
+            content=content,
+            key=API_KEY, 
+            model=MODEL, 
+            novel_name=NOVEL_NAME
+        )
+        
+        save_content(path, translated_content)
+
+        print(Fore.GREEN +f"Dịch hoàn tất! đang bắt đầu chương tiếp theo...")
+        
+        is_success = True
+        time.sleep(3)
+        return True
+    except Exception as e:
+        print(Fore.RED + f"Lỗi dịch.")
+        raise ValueError(Fore.RED + "Dịch thất bại.")
+        
+                    #break  # Exit the model loop if translation is successful
+#                except Exception as e:
+#                    print(Fore.RED + f"Lỗi dịch. Đang thử lại...")
+#                    #time.sleep(2)
+#                   if attempt == MAX_RETRIES - 1:
+#                        print(Fore.RED + "Model này chết hẳn")
+#                    else:
+#                        print(Fore.YELLOW + f"Thử lại...")
+
+        #if is_success:
+        #    break   # thoát vòng key
+                
+        
+
+
 # Test
-if __name__ == "__main__":
-    print("Starting file collection...")
-    vol_lists, chapters_list = collect_files()
-    print("Volumes found:", vol_lists)
-    print(isinstance(chapters_list, list))
-    save_content('./novels/test_novel/das/chapter_test.txt', 'This is a test content.')
-    print(collect_files())
+#if __name__ == "__main__":
+#    print("Starting file collection...")
+#    vol_lists, chapters_list = collect_files()
+#    print("Volumes found:", vol_lists)
+#    print(isinstance(chapters_list, list))
+#    save_content('./novels/test_novel/das/chapter_test.txt', 'This is a test content.')
+#    print(collect_files())

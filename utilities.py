@@ -123,10 +123,9 @@ def is_existed(path):
     """
 
     translated_path = analyze_save_path(path)
-    if os.path.exists(translated_path):
-        return True
-    else:
+    if translated_path is None:
         return False
+    return os.path.exists(translated_path)
     
     
 

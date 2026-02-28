@@ -5,7 +5,7 @@ import os
 
 
 
-def translate(content):
+def translate(content, key, model, novel_name):
 
     """Translate text content using Google's Generative AI model.
 
@@ -32,17 +32,18 @@ def translate(content):
     os.environ["GRPC_LOG_SEVERITY"] = "ERROR"
 
 
-    # Load configuration from config.json
-    with open('config.json', 'r', encoding="UTF-8") as file:
-        data_config = json.load(file)
-        key = data_config['api_key']
-        model = data_config['model']
-        novel_name = data_config['novel_name']
+    
+
+    
 
     # Construct paths for additional files
     novel_folder = f"./novels/{novel_name}/"
     relationship = novel_folder + "relationship.md"
 
+    # Check if relationship file exists
+    if not os.path.exists(relationship):
+        with open(relationship, 'w', encoding='utf-8') as file:
+            pass
     # Load character relationships for context
 
     with open(relationship, 'r', encoding='utf-8') as file:
@@ -54,14 +55,14 @@ def translate(content):
 
     # Set up model with API key and instructions
     instruc_relate = data_relationship
-    genai.configure(api_key=key)
+    genai.configure(api_key=key) # type: ignore
 
     # Initialize the generative model with system instructions
-    model = genai.GenerativeModel(
+    model = genai.GenerativeModel( # type: ignore
         model_name=model,
         system_instruction=f"""
         {prompt}
-        Here is the relationship data:
+        Đây là thông tin bổ sung:
         {instruc_relate}
     """
         )
@@ -73,7 +74,7 @@ def translate(content):
         
         {content}
 """,
-        generation_config={
+        generation_config={  # type: ignore
         "temperature": 0.7,
         "top_p": 0.8,
     })

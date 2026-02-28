@@ -2,8 +2,16 @@
 .tmp.driveupload/
 novels/
 translated/
+novels_txt_split/
+novels_txt/
+novels_backup/
+translated/
 config.json
 prompt.md
+key.txt
+model.txt
+.tmp.driveupload
+
 
 
 # Python
