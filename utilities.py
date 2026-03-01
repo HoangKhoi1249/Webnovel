@@ -59,10 +59,10 @@ class TranslateLogger:
             StateData = {
                 "StartTime": str(self.StartTime),
                 "Success": self.SuccessCount,
-                "Failed": self.FailCount,
+                "FailedTime": self.FailCount,
                 "Blocked": self.BlockCount,
                 "Quota": self.QuotaCount,
-                "Retried": self.RetryCount,
+                "RetriedTime": self.RetryCount,
                 "BlockedFiles": sorted(list(self.BlockedFiles))
             }
 
