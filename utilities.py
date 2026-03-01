@@ -1,6 +1,6 @@
 
 import os
-import atexit
+import json
 import traceback
 import re
 from datetime import datetime
@@ -9,28 +9,31 @@ class TranslateLogger:
 
     def __init__(self):
         self.StartTime = datetime.now()
+
         self.SuccessCount = 0
         self.FailCount = 0
         self.BlockCount = 0
         self.RetryCount = 0
         self.QuotaCount = 0
+
         self.BlockedFiles = set()
-        self.FailedFiles = set()
 
         os.makedirs("logs", exist_ok=True)
 
-        FileName = self.StartTime.strftime("%Y-%m-%d_%H-%M-%S") + ".log"
-        self.LogPath = os.path.join("logs", FileName)
+        FileName = self.StartTime.strftime("%Y-%m-%d_%H-%M-%S")
+        self.LogPath = os.path.join("logs", FileName + ".log")
+        self.StatePath = os.path.join("logs", FileName + ".state.log")
 
+        # Tạo log file
         with open(self.LogPath, "w", encoding="utf-8") as Log:
             Log.write("=== TRANSLATE SESSION START ===\n")
             Log.write(f"Start Time: {self.StartTime}\n\n")
 
-        # Tự động ghi summary khi chương trình kết thúc
-        atexit.register(self.finalize)
+        # Tạo state file ban đầu
+        self._save_state()
 
     # =============================
-    # Ghi log cơ bản
+    # Ghi dòng log
     # =============================
     def write(self, Message, Level="INFO"):
         TimeStamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -39,6 +42,34 @@ class TranslateLogger:
         try:
             with open(self.LogPath, "a", encoding="utf-8") as Log:
                 Log.write(LogLine)
+                Log.flush()
+                os.fsync(Log.fileno())
+
+            # Ghi state ngay sau khi ghi log
+            self._save_state()
+
+        except:
+            pass
+
+    # =============================
+    # Lưu state
+    # =============================
+    def _save_state(self):
+        try:
+            StateData = {
+                "StartTime": str(self.StartTime),
+                "Success": self.SuccessCount,
+                "Failed": self.FailCount,
+                "Blocked": self.BlockCount,
+                "Quota": self.QuotaCount,
+                "Retried": self.RetryCount,
+                "BlockedFiles": sorted(list(self.BlockedFiles))
+            }
+
+            with open(self.StatePath, "w", encoding="utf-8") as State:
+                json.dump(StateData, State, indent=4, ensure_ascii=False)
+                State.flush()
+                os.fsync(State.fileno())
         except:
             pass
 
@@ -48,12 +79,11 @@ class TranslateLogger:
     def success(self, FilePath=None):
         self.SuccessCount += 1
         if FilePath:
-            self.write(f"SUCCESS: {FilePath}", "SUCCESS")
+            self.write(f"SUCCESS: {FilePath}", "SUCCESS")    
 
     def fail(self, FilePath=None, Error=None):
         self.FailCount += 1
         if FilePath:
-            #self.FailedFiles.append(FilePath)
             self.write(f"FAIL: {FilePath}", "ERROR")
         if Error:
             self.write(str(Error), "ERROR")
@@ -75,21 +105,22 @@ class TranslateLogger:
             self.write(f"QUOTA EXCEEDED: {FilePath}", "QUOTA")
 
     # =============================
-    # Ghi lỗi exception đầy đủ
+    # Exception
     # =============================
     def log_exception(self, Error):
         Trace = traceback.format_exc()
         self.write(str(Error), "EXCEPTION")
         self.write(Trace, "TRACE")
+        self._save_state()
 
     # =============================
-    # Tổng kết cuối phiên
+    # In SUMMARY chuẩn format
     # =============================
-    def finalize(self):
+    def build_summary(self):
         EndTime = datetime.now()
         Duration = EndTime - self.StartTime
 
-        Summary = "\n=== SESSION SUMMARY ===\n"
+        Summary = "=== SESSION SUMMARY ===\n"
         Summary += f"End Time      : {EndTime}\n"
         Summary += f"Duration      : {Duration}\n"
         Summary += f"Success       : {self.SuccessCount}\n"
@@ -97,25 +128,9 @@ class TranslateLogger:
         Summary += f"Blocked       : {self.BlockCount}\n"
         Summary += f"Quota Exceeded: {self.QuotaCount}\n"
         Summary += f"Retried       : {self.RetryCount}\n\n"
-        Summary += f"Total Processed: {self.SuccessCount + self.FailCount + self.BlockCount + self.QuotaCount}\n\n"
+        Summary += f"Total Processed: {self.SuccessCount + self.FailCount + self.BlockCount + self.QuotaCount}\n"
 
-        if self.BlockedFiles:
-            Summary += "---- BLOCKED FILES ----\n"
-            for File in self.BlockedFiles:
-                Summary += f"{File}\n"
-            Summary += "\n"
-
-        if self.FailedFiles:
-            Summary += "---- FAILED FILES ----\n"
-            for File in self.FailedFiles:
-                Summary += f"{File}\n"
-            Summary += "\n"
-
-        try:
-            with open(self.LogPath, "a", encoding="utf-8") as Log:
-                Log.write(Summary)
-        except:
-            pass
+        return Summary
 
 def has_subfolders(fol_path):
 
