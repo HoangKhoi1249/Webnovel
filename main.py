@@ -1,8 +1,8 @@
 import time
-
 import utilities as util
 import chapter_process as cp
 import sys
+import utilities as util
 from colorama import Fore, Style # type: ignore
 
 
@@ -31,9 +31,14 @@ def main(split_volume=True):
         - Expects novels in './novels/{novel_name}/' directory
         - Creates translated files in './translated/' directory
         - Handles translation errors with retry mechanism
+
     """
+
+    logger = util.TranslateLogger()
+
     print(Fore.BLUE + f"Phiên bản: {sys.version}")
     max_retries = 1
+
     with open('key.txt', 'r', encoding='utf-8') as f:
         keys = [line.strip() for line in f]
 
@@ -72,6 +77,7 @@ def main(split_volume=True):
                     retry = 0
 
                     while retry < max_retries:
+
                         try:
                             print(Fore.BLUE + f"Còn {len(keys)} key và {len(models)} model \n(lần {retry + 1}/{max_retries})")
                             cp.full_translate(
@@ -89,14 +95,24 @@ def main(split_volume=True):
                         except Exception as e:
                             retry += 1
                             print(Fore.RED + f"Lỗi dịch\nLỗi: {e}")
+                            error_message = str(e)
+                            if "quota" in error_message.lower():
 
-                            if retry >= max_retries:
-                                model_index += 1
-                                if model_index < len(models):    
-                                    print(Fore.YELLOW + f"Đổi sang model tiếp theo: {models[model_index]}")
-                                else:
-                                    print(Fore.YELLOW + f"Hết model, sẽ thử lại với key tiếp theo.")
+                                if retry >= max_retries:
+                                    model_index += 1
+                                    logger.quota_exceeded(chap)
+                                    if model_index < len(models):    
+                                        print(Fore.YELLOW + f"Đổi sang model tiếp theo: {models[model_index]}")
+                                    else:
+                                        print(Fore.YELLOW + f"Hết model, sẽ thử lại với key tiếp theo.")
+                            elif "PROHIBITED_CONTENT" or "block" in error_message:
+                                print(Fore.RED + f"Chương bị cấm hoặc bị chặn!")
+                                logger.block(chap)
+
+                                model_success = True
+                                success = True  # Mark as successful to move to next chapter
                             
+
 
                 if not model_success:
                     print(Fore.RED + f"Key chết → xóa: {API_KEY}")

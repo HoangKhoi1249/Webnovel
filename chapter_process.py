@@ -189,8 +189,8 @@ def full_translate(path, API_KEY=None, MODEL=None):
         time.sleep(3)
         return True
     except Exception as e:
-        print(Fore.RED + f"Lỗi dịch.")
-        raise ValueError(Fore.RED + "Dịch thất bại.")
+        print(Fore.RED + f"Lỗi dịch!")
+        raise ValueError(Fore.RED + f"Dịch thất bại.\n{e}")
         
                     #break  # Exit the model loop if translation is successful
 #                except Exception as e:
