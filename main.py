@@ -87,28 +87,31 @@ def main(split_volume=True):
                             )
                             
                             
-
+                            logger.success(chap)
                             model_success = True
                             success = True
                             time.sleep(10)  # Optional: Add delay between retries
                             break  # Exit retry loop on success
                         except Exception as e:
                             retry += 1
-                            print(Fore.RED + f"Lỗi dịch\nLỗi: {e}")
+                            logger.fail(chap, e)
+                            logger.retry(chap)
+                            
                             error_message = str(e)
                             if "quota" in error_message.lower():
-
+                                print(Fore.RED + f"Chạm limit của model!")
                                 if retry >= max_retries:
                                     model_index += 1
-                                    logger.quota_exceeded(chap)
+                                    logger.fail(chap, "Quota exceeded, switching model.")
                                     if model_index < len(models):    
                                         print(Fore.YELLOW + f"Đổi sang model tiếp theo: {models[model_index]}")
                                     else:
                                         print(Fore.YELLOW + f"Hết model, sẽ thử lại với key tiếp theo.")
+                                logger.quota_exceeded(chap)
                             elif "PROHIBITED_CONTENT" or "block" in error_message:
                                 print(Fore.RED + f"Chương bị cấm hoặc bị chặn!")
-                                logger.block(chap)
 
+                                logger.block(chap)
                                 model_success = True
                                 success = True  # Mark as successful to move to next chapter
                             

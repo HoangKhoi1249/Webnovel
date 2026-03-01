@@ -13,9 +13,9 @@ class TranslateLogger:
         self.FailCount = 0
         self.BlockCount = 0
         self.RetryCount = 0
-
-        self.BlockedFiles = []
-        self.FailedFiles = []
+        self.QuotaCount = 0
+        self.BlockedFiles = set()
+        self.FailedFiles = set()
 
         os.makedirs("logs", exist_ok=True)
 
@@ -53,7 +53,7 @@ class TranslateLogger:
     def fail(self, FilePath=None, Error=None):
         self.FailCount += 1
         if FilePath:
-            self.FailedFiles.append(FilePath)
+            #self.FailedFiles.append(FilePath)
             self.write(f"FAIL: {FilePath}", "ERROR")
         if Error:
             self.write(str(Error), "ERROR")
@@ -61,7 +61,7 @@ class TranslateLogger:
     def block(self, FilePath=None):
         self.BlockCount += 1
         if FilePath:
-            self.BlockedFiles.append(FilePath)
+            self.BlockedFiles.add(FilePath)
             self.write(f"BLOCKED: {FilePath}", "BLOCK")
 
     def retry(self, FilePath=None):
@@ -93,7 +93,7 @@ class TranslateLogger:
         Summary += f"End Time      : {EndTime}\n"
         Summary += f"Duration      : {Duration}\n"
         Summary += f"Success       : {self.SuccessCount}\n"
-        Summary += f"Failed        : {self.FailCount}\n"
+        Summary += f"Failed Time   : {self.FailCount}\n"
         Summary += f"Blocked       : {self.BlockCount}\n"
         Summary += f"Quota Exceeded: {self.QuotaCount}\n"
         Summary += f"Retried       : {self.RetryCount}\n\n"
