@@ -7,12 +7,15 @@ novels_txt/
 novels_backup/
 translated/
 results/
+Webnovel/
 logs/
 config.json
 prompt.md
 key.txt
 model.txt
 .tmp.driveupload
+startup.bat
+startup.ps1
 
 
 

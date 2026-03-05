@@ -4,6 +4,7 @@ import chapter_process as cp
 import sys
 import utilities as util
 from colorama import Fore, Style # type: ignore
+from datetime import datetime
 
 
 def main(split_volume=True):
@@ -36,7 +37,9 @@ def main(split_volume=True):
 
     logger = util.TranslateLogger()
 
-    print(Fore.BLUE + f"Phiên bản: {sys.version}")
+    Time = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
+
+    print(Fore.BLUE + f"{Time} Phiên bản: {sys.version}")
     max_retries = 1
 
     with open('key.txt', 'r', encoding='utf-8') as f:
@@ -50,7 +53,7 @@ def main(split_volume=True):
         
         
         if vol_lists:
-            print(Fore.GREEN + f"Volumes found: {vol_lists}")
+            print(Fore.GREEN + f"{Time} Volumes found: {vol_lists}")
 
         if util.is_2d_list(chapters_list) and split_volume:
             all_chapters = [chap for vol in chapters_list for chap in vol]
@@ -58,7 +61,7 @@ def main(split_volume=True):
             all_chapters = chapters_list
 
         for chap in all_chapters:
-            print(Fore.BLUE + f"Đang dịch: {chap}...")
+            print(Fore.BLUE + f"{Time} Đang dịch: {chap}...")
 
             key_index = 0
             success = False
@@ -67,7 +70,7 @@ def main(split_volume=True):
 
                 API_KEY = keys[key_index]
                 print(
-                    Fore.BLUE + f"Thử dịch với key: {key_index} - {API_KEY}"
+                    Fore.BLUE + f"{Time} Thử dịch với key: {key_index} - {API_KEY}"
                       )
                 model_success = False
                 model_index = 0
@@ -79,7 +82,7 @@ def main(split_volume=True):
                     while retry < max_retries:
 
                         try:
-                            print(Fore.BLUE + f"Còn {len(keys)} key và {len(models)} model \n(lần {retry + 1}/{max_retries})")
+                            print(Fore.BLUE + f"{Time} Còn {len(keys)} key và {len(models)} model \n(lần {retry + 1}/{max_retries})")
                             cp.full_translate(
                                 chap,
                                 API_KEY,
@@ -99,17 +102,17 @@ def main(split_volume=True):
                             
                             error_message = str(e)
                             if "quota" in error_message.lower():
-                                print(Fore.RED + f"Chạm limit của model!")
+                                print(Fore.RED + f"{Time} Chạm limit của model!")
                                 if retry >= max_retries:
                                     model_index += 1
                                     logger.fail(chap, "Quota exceeded, switching model.")
                                     if model_index < len(models):    
-                                        print(Fore.YELLOW + f"Đổi sang model tiếp theo: {models[model_index]}")
+                                        print(Fore.YELLOW + f"{Time} Đổi sang model tiếp theo: {models[model_index]}")
                                     else:
-                                        print(Fore.YELLOW + f"Hết model, sẽ thử lại với key tiếp theo.")
+                                        print(Fore.YELLOW + f"{Time} Hết model, sẽ thử lại với key tiếp theo.")
                                 logger.quota_exceeded(chap)
                             elif "PROHIBITED_CONTENT" or "block" in error_message:
-                                print(Fore.RED + f"Chương bị cấm hoặc bị chặn!")
+                                print(Fore.RED + f"{Time} Chương bị cấm hoặc bị chặn!")
 
                                 logger.block(chap)
                                 model_success = True
@@ -118,7 +121,7 @@ def main(split_volume=True):
 
 
                 if not model_success:
-                    print(Fore.RED + f"Key chết → xóa: {API_KEY}")
+                    print(Fore.RED + f"{Time} Key chết → xóa: {API_KEY}")
                     keys.pop(key_index)
                     time.sleep(2)  # Optional: Add delay after removing a key
 
@@ -126,10 +129,10 @@ def main(split_volume=True):
                     break
 
             if not success:
-                raise Exception("Hết toàn bộ key!")
+                raise Exception(f"{Time} Hết toàn bộ key!")
             
-        print(Fore.GREEN + f"Tất cả chương đã được dịch xong!")
+        print(Fore.GREEN + f"{Time} Tất cả chương đã được dịch xong!")
 
     except Exception as e:
-        print(Fore.RED + f"Lỗi trong quá trình dịch: {e}")
+        print(Fore.RED + f"{Time} Lỗi trong quá trình dịch: {e}")
 main()
