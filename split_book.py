@@ -2,6 +2,61 @@ import argparse
 import os
 from pathlib import Path
 
+"""
+Split Book Utility
+
+This script provides functionality to split large text files into smaller parts.
+It supports two modes: single file splitting and batch processing of multiple files.
+
+OPTIONS:
+    input                    Input text file to split (required in single file mode)
+    -o, --outdir DIR         Output directory (default: <input>_split for single file)
+    -n, --lines N            Lines per split file (default: 100)
+    --batch                  Process all .txt files in directory recursively
+    --ori-dir DIR            Origin directory to scan in batch mode (default: ./novels_txt)
+    --save-dir DIR           Base save directory in batch mode (default: ./novels_txt_split)
+
+Single File Mode:
+    Split one text file into multiple parts based on line count.
+
+    Usage:
+        python split_book.py <input_file> [options]
+
+    Examples:
+        # Split a file into parts of 100 lines each (default)
+        python split_book.py novel.txt
+
+        # Split with 50 lines per file
+        python split_book.py novel.txt -n 50
+
+        # Split with custom output directory
+        python split_book.py novel.txt -o ./split_parts
+
+        # Split with both custom lines and output directory
+        python split_book.py novel.txt -n 50 -o ./split_parts
+
+Batch Mode:
+    Process all .txt files in a directory recursively, preserving folder structure.
+
+    Usage:
+        python split_book.py --batch [options]
+
+    Examples:
+        # Process all .txt files in default novels_txt directory
+        python split_book.py --batch
+
+        # Process with custom source directory
+        python split_book.py --batch --ori-dir ./books
+
+        # Process with custom destination directory
+        python split_book.py --batch --save-dir ./processed
+
+        # Process with both custom directories
+        python split_book.py --batch --ori-dir ./books --save-dir ./processed
+
+Note: You cannot specify an input file when using --batch mode, and vice versa.
+"""
+
 ORI_DIR = "./novels_txt"
 SAVE_DIR = "./novels_txt_split"
 
@@ -9,6 +64,22 @@ os.makedirs(ORI_DIR, exist_ok=True)
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def split_file(path, output_dir=None, lines_per_file=100):
+	"""
+	Split a text file into multiple smaller files.
+
+	Args:
+		path (str or Path): Path to the input text file
+		output_dir (str or Path, optional): Directory to save split files.
+			If None, creates a directory named after the input file with '_split' suffix.
+		lines_per_file (int): Number of lines per split file. Default is 100.
+
+	Returns:
+		int: Number of parts created
+
+	Example:
+		>>> split_file("novel.txt", lines_per_file=50)
+		12  # Created 12 parts
+	"""
 	path = Path(path)
 	if output_dir is None:
 		output_dir = path.with_suffix("").as_posix() + "_split"
@@ -39,6 +110,15 @@ def split_file(path, output_dir=None, lines_per_file=100):
 
 
 def main():
+	"""
+	Main function to handle command-line arguments and execute file splitting.
+
+	Parses command-line arguments and either processes a single file or batch processes
+	all .txt files in the specified directory.
+
+	Returns:
+		int: Exit code (0 for success, 1 for error)
+	"""
 	parser = argparse.ArgumentParser(description="Split a text file into multiple files every N lines.")
 	parser.add_argument("input", nargs="?", help="Input text file to split (omit when using --batch)")
 	parser.add_argument("-o", "--outdir", help="Output directory (default: <input>_split)")
