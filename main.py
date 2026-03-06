@@ -102,7 +102,9 @@ def main(split_volume=True):
                             
                             error_message = str(e)
                             if "quota" in error_message.lower():
-                                print(Fore.RED + f"{Time} Chạm limit của model!")
+                                model_died = Fore.RED + f"{Time} Chạm limit của model!"
+                                logger.model_died(model=MODEL)
+                                print(model_died)
                                 if retry >= max_retries:
                                     model_index += 1
                                     logger.fail(chap, "Quota exceeded, switching model.")
@@ -121,7 +123,9 @@ def main(split_volume=True):
 
 
                 if not model_success:
-                    print(Fore.RED + f"{Time} Key chết → xóa: {API_KEY}")
+                    key_dead_msg = Fore.RED + f"{Time} Key chết → xóa: {API_KEY}"
+                    logger.key_died(key=API_KEY, msg=key_dead_msg)
+                    print(key_dead_msg)
                     keys.pop(key_index)
                     time.sleep(2)  # Optional: Add delay after removing a key
 

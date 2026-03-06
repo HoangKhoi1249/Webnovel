@@ -15,6 +15,8 @@ class TranslateLogger:
         self.BlockCount = 0
         self.RetryCount = 0
         self.QuotaCount = 0
+        self.KeyStatusCount = 0
+        self.ModelStatusCount = 0
 
         self.BlockedFiles = set()
 
@@ -63,6 +65,8 @@ class TranslateLogger:
                 "Blocked": self.BlockCount,
                 "Quota": self.QuotaCount,
                 "RetriedTime": self.RetryCount,
+                "KeyDiedStatus": self.KeyStatusCount,
+                "ModelDiedStatus": self.ModelStatusCount,
                 "BlockedFiles": sorted(list(self.BlockedFiles))
             }
 
@@ -104,9 +108,24 @@ class TranslateLogger:
         if FilePath:
             self.write(f"QUOTA EXCEEDED: {FilePath}", "QUOTA")
 
-    # =============================
-    # Exception
-    # =============================
+    def model_died(self, model=None, msg=None):
+        self.ModelStatusCount += 1
+        message = f"STATUS_MODEL: {model}"
+        if msg:
+            message += f" - {msg}"
+        else:
+            message += f" - DIED [{self.ModelStatusCount}]"
+        self.write(message, "MODEL_DIED")
+
+    def key_died(self, key=None, msg=None):
+        self.KeyStatusCount += 1
+        message = f"STATUS_KEY: {key}"
+        if msg:
+            message += f" - {msg}"
+        else:
+            message += f" - DIED [{self.KeyStatusCount}]"
+        self.write(message, "KEY_DIED")
+
     def log_exception(self, Error):
         Trace = traceback.format_exc()
         self.write(str(Error), "EXCEPTION")
@@ -127,7 +146,8 @@ class TranslateLogger:
         Summary += f"Failed Time   : {self.FailCount}\n"
         Summary += f"Blocked       : {self.BlockCount}\n"
         Summary += f"Quota Exceeded: {self.QuotaCount}\n"
-        Summary += f"Retried       : {self.RetryCount}\n\n"
+        Summary += f"Retried       : {self.RetryCount}\n"
+        Summary += f"Key Status    : {self.KeyStatusCount}\n\n"
         Summary += f"Total Processed: {self.SuccessCount + self.FailCount + self.BlockCount + self.QuotaCount}\n"
 
         return Summary
