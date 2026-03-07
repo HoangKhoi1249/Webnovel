@@ -1,3 +1,4 @@
+from sqlite3 import Time
 import time
 import utilities as util
 import chapter_process as cp
@@ -139,4 +140,7 @@ def main(split_volume=True):
 
     except Exception as e:
         print(Fore.RED + f"{Time} Lỗi trong quá trình dịch: {e}")
-main()
+while True:
+    main()
+    print(Fore.YELLOW + f"{Time} Đang khởi động lại quá trình dịch sau 5 phút...")
+    time.sleep(300)  # Optional: Add delay before restarting the process
