@@ -8,7 +8,7 @@ from colorama import Fore, Style # type: ignore
 from datetime import datetime
 
 
-def main(split_volume=True):
+def main(split_volume=True, log = None):
     """Process and translate novel chapters from a source directory.
 
     This function handles both volume-based and flat directory structures.
@@ -36,7 +36,7 @@ def main(split_volume=True):
 
     """
 
-    logger = util.TranslateLogger()
+    logger = log if log else util.TranslateLogger()
 
     Time = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
 
@@ -140,7 +140,9 @@ def main(split_volume=True):
 
     except Exception as e:
         print(Fore.RED + f"{Time} Lỗi trong quá trình dịch: {e}")
+
+log = util.TranslateLogger()
 while True:
-    main()
+    main(log=log)
     print(Fore.YELLOW + f"{Time} Đang khởi động lại quá trình dịch sau 5 phút...")
     time.sleep(300)  # Optional: Add delay before restarting the process
